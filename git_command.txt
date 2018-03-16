@@ -13,3 +13,4 @@ sudo git status
 
 
 gcc -o t0 t0.c -pthread -Wall
+
