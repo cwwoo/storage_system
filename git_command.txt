@@ -4,9 +4,9 @@ sudo git cloe https://github.com/cwwoo/storage_system.git
 sudo git remote add origin https://github.com/cwwoo/storage_system.git
 sudo git fetch origin
 
-::sudo git add -A
-::sudo git commit -m "msg"
-::sudo git push
+sudo git add -A
+sudo git commit -m "msg"
+sudo git push
 
 sudo git pull
 sudo git status
