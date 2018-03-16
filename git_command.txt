@@ -11,3 +11,5 @@ sudo git push
 sudo git pull
 sudo git status
 
+
+gcc -o t0 t0.c -pthread -Wall
