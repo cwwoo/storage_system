@@ -1,0 +1,44 @@
+thread가왜  중요한가?
+--> 멀티코어 CPU가 대부분이어서 
+--> execution flow 하나만 만들어 놓으면 비효율적으로 됨
+
+- process 대비 thread 가 좋은 이유는?
+--> resource sharing, allocation 등이 효율적이기 때문
+-----------------------------------------------------------------------------
+- 특정 작업을 할 때 concurrent 하는 작업을 할 때 어떻게 구현하는지에 대해 논의
+
+- 프로그래밍을 하면서 가장 디버깅하기 어려운 부분이 locking 부분
+
+- lock 라고 하는 것이 무엇인가?
+--> 책에서는 variable, 교수님은 data type 라고 생각
+--> lock 는 class 라고 생각, 지난시간의 mutex lock 같은 것
+--> lock 라고 하는 class가 어떤 데이터를 갖고, 어떤 기능을 제공하는지 생각해 봐야함
+--> mylock.lock, mylock.unlock 처럼.
+
+- pthread_lock에 대해
+
+- find-grained lock와 coarse-grained lock
+--> lock를 어떻게 사용하는 것이 효과적인가?
+--> 프로그램 실행의 첫 단계부터 마지막 단계까지 global lock 하나 잡는 경우, 성능의 관점에서 비효율적. 이런 것이 coarse lock, 장점은 코드를 작성하는 게 굉장히 simplicity 함
+--> lock를 내가 필요한 곳에서만 걸고 싶을 때, critical section 앞부분에다가 걸어야 함, 이런 것이 find-grained lock, lock을 세분화 시키는 것, 하지만 lock을 만드는데 자원의 할당과 배분 등이 어렵다면 이점에 대해서는 trade off를 해야 함
+--> 만약, critical section이 짧다면 locking overhead를 생각할 때 기다리는 게 효율적임
+
+- address space를 red-black tree로 관리하는데, rad-black tree는 lock을 한 개만 사용
+--> 이럴 때, lock이 global lock 이면, 성능이 저하
+
+- swap area에 대해,, 하노이 타워,, lock free
+
+- lcok class를 구현한다고 생각할 때, 고려해야 하는 점은?
+--> the crux: how to build a lock
+
+- lock를 구현할 때 제대로 했는지를 평가하는 것은
+--> correctness mutual exclusion, 여러명이 동시에 접근하지 않도록
+--> fairness, 레이스 컨디션
+--> performance이 떨어지는 경우, spin lock(자니자니자니자니자니? 이런 경우 spin lock)
+--> evaluating locks를 할 때는 위의 세가지를 고려해야 함
+- interrupts의 disable을 왜 해야하는가?
+--> Assembly code에서 mov, add, mov 코드를 생각할 때 add 이후 mov를 하기 전 interrupts 가 걸리면 문제가 되기 때문
+--> controlling interrupts의 부분은 굉장히 중요한 내용
+--> 시스템 전체를 컨트롤하는 권한을 일반 프로그램에게 주면안됨, 예를들어 interrupts를 disable 하던지, 
+
+51:55
