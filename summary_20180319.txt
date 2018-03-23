@@ -1,44 +1,75 @@
-thread가왜  중요한가?
---> 멀티코어 CPU가 대부분이어서 
---> execution flow 하나만 만들어 놓으면 비효율적으로 됨
+d 가 왜 중요한가?
+- 멀티코어 CPU가 대부분이어서 
+- execution flow 하나만 만들어 놓으면 비효율적으로 됨
 
-- process 대비 thread 가 좋은 이유는?
---> resource sharing, allocation 등이 효율적이기 때문
------------------------------------------------------------------------------
-- 특정 작업을 할 때 concurrent 하는 작업을 할 때 어떻게 구현하는지에 대해 논의
+2) process 대비 thread 가 좋은 이유는?
+- resource sharing, allocation 등이 효율적이기 때문
 
-- 프로그래밍을 하면서 가장 디버깅하기 어려운 부분이 locking 부분
+3) 특정 작업을 할 때 concurrent 하는 작업을 할 때 어떻게 구현하는지에 대해 논의
+4) 프로그래밍을 하면서 가장 디버깅하기 어려운 부분이 locking 부분
+5) lock 라고 하는 것이 무엇인가?
+- 책에서는 variable, 교수님은 data type 라고 생각
+- lock 는 class 라고 생각, 지난시간의 mutex lock 같은 것
+- lock 라고 하는 class가 어떤 데이터를 갖고, 어떤 기능을 제공하는지 생각해 봐야함
+- mylock.lock, mylock.unlock 처럼.
 
-- lock 라고 하는 것이 무엇인가?
---> 책에서는 variable, 교수님은 data type 라고 생각
---> lock 는 class 라고 생각, 지난시간의 mutex lock 같은 것
---> lock 라고 하는 class가 어떤 데이터를 갖고, 어떤 기능을 제공하는지 생각해 봐야함
---> mylock.lock, mylock.unlock 처럼.
-
-- pthread_lock에 대해
-
+6) pthread_lock에 대해
 - find-grained lock와 coarse-grained lock
---> lock를 어떻게 사용하는 것이 효과적인가?
---> 프로그램 실행의 첫 단계부터 마지막 단계까지 global lock 하나 잡는 경우, 성능의 관점에서 비효율적. 이런 것이 coarse lock, 장점은 코드를 작성하는 게 굉장히 simplicity 함
---> lock를 내가 필요한 곳에서만 걸고 싶을 때, critical section 앞부분에다가 걸어야 함, 이런 것이 find-grained lock, lock을 세분화 시키는 것, 하지만 lock을 만드는데 자원의 할당과 배분 등이 어렵다면 이점에 대해서는 trade off를 해야 함
---> 만약, critical section이 짧다면 locking overhead를 생각할 때 기다리는 게 효율적임
+- lock를 어떻게 사용하는 것이 효과적인가?
+- coarse-grained은 프로그램 실행의 첫 단계부터 마지막 단계까지 global lock 하나 잡는 경우, 성능의 관점에서 비효율적이지만 구현이 쉬움 simplicity
+- find-grained lock는 미세하게 할 때 각각의 락을 두는 것을 말하지만, 너무 미세하게 하는 경우 또다른 오버헤드가 발생됨
+- lock를 내가 필요한 곳에서만 걸고 싶을 때, critical section 앞부분에다가 걸어야 함, 이런 것이 find-grained lock, lock을 세분화 시키는 것, 하지만 lock을 만드는데 자원의 할당과 배분 등이 어렵다면 이점에 대해서는 trade off를 해야 함
+- 만약, critical section이 짧다면 locking overhead를 생각할 때 기다리는 게 효율적임
 
-- address space를 red-black tree로 관리하는데, rad-black tree는 lock을 한 개만 사용
---> 이럴 때, lock이 global lock 이면, 성능이 저하
+7) address space를 red-black tree로 관리하는데, rad-black tree는 lock을 한 개만 사용
+- 이럴 때, lock이 global lock 이면, 성능이 저하
 
-- swap area에 대해,, 하노이 타워,, lock free
+8) swap area에 대해, code, data, stack를 공유하는 영역. 하노이 타워,, lock free
+9) lcok class를 구현한다고 생각할 때, 고려해야 하는 점은?
+- the crux: how to build a lock
 
-- lcok class를 구현한다고 생각할 때, 고려해야 하는 점은?
---> the crux: how to build a lock
+10) lock를 구현할 때 제대로 했는지를 평가하는 것은, design property
+- correctness mutual exclusion, 여러명이 동시에 접근하지 않도록
+- fairness, 레이스 컨디션
+- performance이 떨어지는 경우, spin lock(자니자니자니자니자니? 이런 경우 spin lock)
+- evaluating locks를 할 때는 위의 세가지를 고려해야 함
 
-- lock를 구현할 때 제대로 했는지를 평가하는 것은
---> correctness mutual exclusion, 여러명이 동시에 접근하지 않도록
---> fairness, 레이스 컨디션
---> performance이 떨어지는 경우, spin lock(자니자니자니자니자니? 이런 경우 spin lock)
---> evaluating locks를 할 때는 위의 세가지를 고려해야 함
-- interrupts의 disable을 왜 해야하는가?
---> Assembly code에서 mov, add, mov 코드를 생각할 때 add 이후 mov를 하기 전 interrupts 가 걸리면 문제가 되기 때문
---> controlling interrupts의 부분은 굉장히 중요한 내용
---> 시스템 전체를 컨트롤하는 권한을 일반 프로그램에게 주면안됨, 예를들어 interrupts를 disable 하던지, 
+11) interrupts의 disable을 왜 해야하는가?
+- Assembly code에서 mov, add, mov 코드를 생각할 때 add 이후 mov를 하기 전 interrupts 가 걸리면 문제가 되기 때문
+- controlling interrupts의 부분은 굉장히 중요한 내용
+- 시스템 전체를 컨트롤하는 권한을 일반 프로그램에게 주면안됨, 예를들어 interrupts를 disable 하던지, OS의 privileged를 유지해야함
+- 커널에서는 disable가 가능하지만, 유저가 권한을 갖지는 못함
+- 멀티코어에서는 돌아가고 undisable는 overhead가 걸림
 
-51:55
+12) 인터럽트를 해결하기 위한 방법
+- 첫 번째 방법, mov, add, mov를 instruction으로 만들어 놓으면됨, 하지만 이럴 경우 generalization 가 떨어짐
+- 두 번째 방법, interrupts disable
+- 세 번째 방법, test-and-set(fig 28.3, a simple spin lock using test-and-set 코드가 중요)
+- while(flag==1);	flag==1 일 때 사이에 inturrupts가 걸릴 수 있기 때문에, 해당 사이에 testandset instruction을 사용
+
+13) unlock 할때는 왜 testandset을 사용하지 않는가?
+- 나만 사용하고 있기 때문에 구지 unlock을 할 필요가 없음
+
+14) compare-and-swap 와 test-and-set의 차이
+- test-and-set은 항상 1인지, 0인지를 체크하는 것 인데
+- compare-and-swap는 내가 기대하는 값이 맞으면 셋팅을 하고 아니면 하지 않음
+- value를 ++ 해주는 경우에, 유용하며 compare-and-swap는 test-and-set의 superset 개념
+- 인텔에서 compare-and-swap 만 제공하며, test-and-set을 제공하지는 않음
+
+15) fetch-and-add
+- fetch-and-add는 lock을 걸 때 ticket의 개념을 적용
+- atomic 하게 ticket 값을 1씩 증가시키는 instruction
+
+16) cpu를 잡기위해 testandset을 계속 하는 상황에서 spin lock을 어떻게 없애야 하는가?
+- 게속 while을 쓰기 때문에 cpu 자원이 사용되고 지속적인 체크로 인해 오버헤드가 발생
+- idle 상태로 들어가고 싶은데, 어떻게 os 에게 해야하는지? --> simple approach: yield
+- 크리티컬세션 코드가 짧을 때는 프로세스를 재우는 것 보다 while을 돌리는게 reasonable 함
+- 이럴 경우, round robin 기반의 os time 할당이 끝날 때 혹은 프로세스가 종료되었을 때가 되어야 내차례가 되어서 cpu를 할당함
+- 또 다른 방법은 queues에서 대기하는 방법
+- 이전에 프로세스가 종료되면서 다른 프로세스를 깨웠는데 당시에 타이머 인터럽트로 할당받은 프로세스만 실행되는 경우 다른 프로세스들에 대한 starvation 가 나타날 수 있음
+17) guard에 testandset을 하는 이유는?
+- guard는 queue를 보호하기 위한 것, 왜냐면 queue도 공유데이터 이기 때문에 lock를 잡아야 함
+- park는 자러가는 것, unpark는 깨워주는 것
+- 이때, lock를 풀은 이후 자러갔는데 자러갔다는 시그널을 보내지 못한경우, 내가 깨어나지 못할 수 있고, 락을 풀기 전 시그널을 보내고 자러가면 락을 아무도 잡을 수 없는 문제가 발생
+
+18) two-phase locks는 현재 어떤 상황인지를 모르니깐 일단 몇 번 try 해본 후 자러가는 것
