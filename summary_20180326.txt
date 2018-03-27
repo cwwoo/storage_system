@@ -1,0 +1,29 @@
+1) 지난주 correctness, fairness, performance 에 대해 논의하였음
+
+2) 쓰레드의 안전성은, 결과가 문제없이 나와야 하는 것이고 가장 쉬운 방법으로는 전체 범위에 대해 lock을 거는 global lock를 하는 것
+
+3) concurrent structures
+  - 쓰레드의 개수가 증가할때 현실적으로 time 도 증가하는 현상을 볼 수 있음
+  - 이상적인 그래프 방향으로는 쓰레드의 개수가 증가할때 최소 보합이 되거나, 감소해야 함
+  - sloppy counter 의 경우, 비례적으로(1/10 처럼) 오버헤드를 감소시킬 수 있으나, 실시간으로 확인할 수 없음
+   - 실시간으로 결과값을 읽지 않아도 되는 경우 sloopy counter의 적용이 가능
+
+4) concurrent linked list
+  - 링크드 리스트는 퍼포먼스를 높일 것 인지, 버그를 줄일 것 인지에 대한 이슈중 버그를 줄이는 디자인 패턴을 갖음
+  - 링크드 리스트의 search(), lock(), insert(), unlock() 의 경우, search와 insert 두줄이 atomic 해야 오류를 최소화 할 수 있음
+  - 추가로, malloc 같은 메모리를 할당하는 함수는 lock 또는 cs영역에 넣지 말고 그 이전에 처리해야 함
+  - hand-over-hand 의 경우 굉장히 높은 오버헤드를 발생시킴
+
+5) concurrent queue
+  - queue의 경우 기능적으로 inqueue와 dequeue가 있어야 하며,
+  - michael and scott 의 경우 dummy node 를 둠으로써 문제를 해결
+  - 노드를 삭제하지 않고 테일과 헤드에 대한 포인트를 바꾸어 가는 것 이지만,
+  - 현실적으로는 버퍼가 무한대가 아니기 때문에 적용하기 곤란
+  - 락을 분리시킴으로써 성능을 향상시킬 수 있는 측면의 방법을 제시하는 기법
+
+6) concurrent hash table
+  - 락을 버킷마다 둘 때, n=m 이면 table 이고, n>m 이면 hash table 임
+
+7) condition variables
+  - CV는 사실상 queue 이며, 실행에 대한 특정한 상황을 체크
+
